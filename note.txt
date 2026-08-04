@@ -1,0 +1,4 @@
+table strucure banaya 
+github pe uplaod kiya 
+library and module install kiya
+pdf to csv convert ni horaha tha achese to pdfplumber install kiya table form me pdf ko extract karne ke liye 
