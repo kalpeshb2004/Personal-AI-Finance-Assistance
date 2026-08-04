@@ -1,0 +1,6 @@
+echo "venv/
+__pycache__/
+*.pyc
+reports/*.xlsx
+reports/*.pdf
+.env" > .gitignore
