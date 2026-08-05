@@ -1,16 +1,13 @@
-# Simple flow: Raw CSV → Date fix → Amount fix → Merchant name clean → Final ready DataFrame.
-
 import pandas as pd
 import re
+from src.pdf_parser import extract_transactions_from_pdf  # PDF wala function import karo
 
-# Ek numeric column (Withdrawal/Deposit/Balance) ko clean float mein convert karta hai.
 def clean_amount_column(df, column_name):
-    df[column_name] = df[column_name].astype(str).str.replace(",", "", regex=False).str.strip() # (, . " ") ye hatana iska kam
+    df[column_name] = df[column_name].astype(str).str.replace(",", "", regex=False).str.strip()
     df[column_name] = pd.to_numeric(df[column_name], errors="coerce")
     df[column_name] = df[column_name].fillna(0)
     return df
 
-# Raw transaction description se merchant ka clean naam nikalta hai (regex se noise hatake).
 def clean_merchant_name(description):
     text = description.lower()
     text = re.sub(r'upi[/\-]', '', text)
@@ -21,9 +18,12 @@ def clean_merchant_name(description):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-# Master function — poora pipeline chalata hai, upar ke dono functions ko call karke final clean DataFrame banata hai.
 def load_and_clean(file_path):
-    df = pd.read_csv(file_path)
+    # File type check karo — PDF hai ya CSV
+    if file_path.lower().endswith(".pdf"):
+        df = extract_transactions_from_pdf(file_path)
+    else:
+        df = pd.read_csv(file_path)
     
     df["Date"] = pd.to_datetime(df["Date"], format="%d %b %Y")
     
@@ -38,6 +38,4 @@ def load_and_clean(file_path):
     return df
 
 if __name__ == "__main__":
-    df = load_and_clean("data/cleaned_statement.csv")
-
-
+    df = load_and_clean("data/AccountStatement_01-Aug-2026_03-Aug-2026.pdf")
