@@ -5,3 +5,6 @@ scikit-learn
 openpyxl
 rapidfuzz
 python-docx
+openpyxl
+pdfplumber
+tabulate
