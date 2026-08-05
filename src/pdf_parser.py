@@ -32,3 +32,4 @@ if __name__ == "__main__":
     print(df)
     df.to_csv("data/cleaned_statement.csv", index=False)
     print("\nSaved to data/cleaned_statement.csv")
+    
