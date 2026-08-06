@@ -26,3 +26,10 @@ def categorize_row(row):
 def categorize_dataframe(df):
     df["Category"] = df.apply(categorize_row, axis=1)
     return df
+
+# Ye function batayega kaunsa exact keyword match hua (sirf category nahi, balki specific app naam):
+def get_matched_keyword(clean_merchant_text):
+    for keyword, category in MERCHANT_RULES.items():
+        if keyword in clean_merchant_text:
+            return keyword
+    return "other"
