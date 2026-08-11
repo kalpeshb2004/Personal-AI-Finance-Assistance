@@ -1,5 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import shutil
 import os
 
@@ -10,8 +12,10 @@ from src.report_generator import generate_pdf_report
 from src.pdf_parser import extract_account_details
 from src.db_operations import save_to_database
 
+# ---------- App banao (SIRF EK BAAR) ----------
 app = FastAPI(title="Personal Finance Bot API")
 
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,13 +23,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Static files serve karo
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/reports", StaticFiles(directory="reports"), name="reports")
+
 UPLOAD_DIR = "data/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
+# ---------- Routes ----------
+
 @app.get("/")
 def root():
-    return {"message": "Finance Bot API is running"}
+    return FileResponse("static/index.html")
+
+
+@app.get("/download-report")
+def download_report():
+    file_path = "reports/finance_report.pdf"
+    if os.path.exists(file_path):
+        return FileResponse(file_path, filename="finance_report.pdf", media_type="application/pdf")
+    raise HTTPException(status_code=404, detail="Report not found")
 
 
 @app.post("/upload")
