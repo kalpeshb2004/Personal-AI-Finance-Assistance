@@ -5,7 +5,13 @@ scikit-learn
 openpyxl
 rapidfuzz
 python-docx
-openpyxl
 pdfplumber
 tabulate
 reportlab
+fastapi
+uvicorn
+python-multipart
+jinja2
+sqlalchemy
+pymysql
+python-dotenv
