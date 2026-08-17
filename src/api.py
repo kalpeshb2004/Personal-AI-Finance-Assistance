@@ -48,12 +48,22 @@ def download_report():
 
 @app.post("/upload")
 async def upload_statement(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+    
     file_path = os.path.join(UPLOAD_DIR, file.filename)
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     
     try:
         df = load_and_clean(file_path)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail="Could not read this PDF. Make sure it's a valid bank statement.")
+    
+    if df.empty or len(df) == 0:
+        raise HTTPException(status_code=422, detail="No transactions found in this statement.")
+    
+    try:
         df = categorize_dataframe(df)
         
         plot_category_pie(df)
@@ -85,4 +95,4 @@ async def upload_statement(file: UploadFile = File(...)):
         }
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Something went wrong while processing this statement. Please try again.")
