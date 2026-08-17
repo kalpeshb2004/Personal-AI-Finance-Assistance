@@ -87,7 +87,7 @@ def generate_pdf_report(df, account_details, output_path="reports/finance_report
     # ---------- Spending Summary Section ----------
     story.append(Paragraph("Spending Summary", styles["Heading2"]))
     
-    spend_df = df[df["Withdrawal"] > 0]
+    spend_df = df[(df["Withdrawal"] > 0) & (df["Category"] != "Person Transfer")]
     total_spend = spend_df["Withdrawal"].sum()
     
     # Statement ka date range nikalo — kitne mahine ka data hai

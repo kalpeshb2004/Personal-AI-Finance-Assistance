@@ -2,3 +2,11 @@ table strucure banaya
 github pe uplaod kiya 
 library and module install kiya
 pdf to csv convert ni horaha tha achese to pdfplumber install kiya table form me pdf ko extract karne ke liye 
+
+
+**data base deploy karna tha 
+to mene select kiya : avein 
+waha my sql ka database banaya lekin waha databse nahi dikh raha tha usko mene mysql workbench se connect kiya taki me table create hua ya nahi o dekh sku 
+
+mtlb create kiya online avein me use dekhane ke liye use kiya mysql workbench
+

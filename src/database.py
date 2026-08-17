@@ -10,22 +10,31 @@ load_dotenv()
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT", "3306")
 DB_NAME = os.getenv("DB_NAME")
 
-# URL.create() automatically special characters (@, #, etc.) ko safely encode karta hai
 DATABASE_URL = URL.create(
     drivername="mysql+pymysql",
     username=DB_USER,
     password=DB_PASSWORD,
     host=DB_HOST,
+    port=int(DB_PORT),
     database=DB_NAME,
 )
 
-engine = create_engine(DATABASE_URL)
+# Aiven ko SSL certificate chahiye connection ke liye
+connect_args = {
+    "ssl": {
+        "ca": "certs/ca.pem"
+    }
+}
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
-# ---------- TABLES ----------
+
+# ---------- TABLES (same rahenge, koi change nahi) ----------
 
 class User(Base):
     __tablename__ = "users"
@@ -71,8 +80,6 @@ class Transaction(Base):
     
     statement = relationship("Statement", back_populates="transactions")
 
-
-# ---------- CREATE TABLES ----------
 
 def init_db():
     Base.metadata.create_all(bind=engine)
